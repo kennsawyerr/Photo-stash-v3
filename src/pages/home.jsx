@@ -1,3 +1,4 @@
+import { useState } from "react";
 // import picture from "./nothing-to-see-icon.png";
 // import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -6,7 +7,7 @@ import { EmojiHappy } from "iconsax-react";
 
 
 import "../styles/styles.css";
-import { useState } from "react";
+
 import Navbar from "./navbar";
 
 
@@ -21,7 +22,8 @@ function App() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageOk, setImageOk] = useState(null);
   const [imageLimit, setImageLimit] = useState(null);
-  const [fileforUser, setFileForUser] = useState(null);
+  const [fileforUser, setFileForUser] = useState();
+  
   // const {imageUpload , setImageUpload} = useState(null)
 
   {
@@ -120,20 +122,25 @@ function App() {
               name="myImage"
               {...register("myImage", { required: true })}
               onChange={(event) => {
+               
                 console.log(event.target.files[0]);
-                const clickedFile =event.target.files[0];
+                
+                
+               
                 const fileLimit = 5 * 1024 * 1024; // 5 MB
-                setFileForUser(event.target.files[0])
-                setFileForUser(clickedFile)
-               console.log(fileforUser)
+                // setFileForUser(event.target.files[0])
+               const clickedFile = event.target.files[0]
+                
+              //  console.log("testfile",setFileForUser(clickedFile))
+             
 
-                if (fileforUser.size > fileLimit) {
+                if (clickedFile.size > fileLimit) {
                   setImageLimit("Photo is larger than 5MB");
                 } else {
                   if (
-                    fileforUser.type != "image/png" &&
-                    fileforUser.type != "image/jpeg" &&
-                    fileforUser.type != "image/jpg"
+                    clickedFile.type != "image/png" &&
+                    clickedFile.type != "image/jpeg" &&
+                    clickedFile.type != "image/jpg"
                   ) {
                     setError("myImage", {
                       type: "manual",
@@ -142,8 +149,9 @@ function App() {
                   } else {
                     setImageOk("Correct");
                     clearErrors("myImage");
-                    setSelectedImage(event.target.files[0]);
-                 
+                    setSelectedImage(clickedFile);
+                    setFileForUser(clickedFile)
+                    console.log(fileforUser)
                   }
                 }
               }}
