@@ -1,6 +1,4 @@
 import { useState } from "react";
-// import picture from "./nothing-to-see-icon.png";
-// import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { TickCircle } from "iconsax-react";
 import { EmojiHappy } from "iconsax-react";
@@ -19,35 +17,36 @@ function App() {
     formState: { errors },
   } = useForm();
 
+
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageOk, setImageOk] = useState(null);
   const [imageLimit, setImageLimit] = useState(null);
   const [fileforUser, setFileForUser] = useState();
   
-  // const {imageUpload , setImageUpload} = useState(null)
+
 
   {
     imageOk && setTimeout(() => setImageOk(false), 5000);
   }
-  // const [photoFolder, setPhotoFolder] = useState([]);
- const photoFolder = []
+  
 
-  const handleImageUpload = () => {
+  const handleDrop = (event) => {
+    event.preventDefault();
+    console.log("event",event)
+    const file = event.dataTransfer.files[0];
+    setSelectedImage(file);
+  };
 
-   photoFolder.push(fileforUser)
-    
-   
-    // const selectedFile = file.target.files[0];
-    // setPhotoFolder((prevPhotos) => [...prevPhotos, selectedFile]);
-    // alert(photoFolder)
-  }
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
+
+  
   return (
+    <>
     <div className="App container">
       <nav className="flex">
         <div className="container flex">
-          {/*             
-            <NavLink className  to="/another" >Gallery</NavLink>
-              <NavLink className  to="/another-route" >Gallery</NavLink> */}
           <div>
            
             <Navbar/>
@@ -58,7 +57,7 @@ function App() {
       {imageOk && (
         <div className="  success flex notif">
           <div className="container flex">
-            <TickCircle /> <p> Upload successful</p>
+            <TickCircle/> <p> Upload successful</p>
           </div>
         </div>
       )}
@@ -66,15 +65,19 @@ function App() {
       <main>
         <section>
           <form>
-            <div className="box grid">
+            <div className="box grid
+            "
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}>
               <label htmlFor="">
-                {selectedImage && (
+                {selectedImage  && (
                   <div className="img-cont">
                     <img
                       alt="a nice photo"
                       className="input-img"
                       src={URL.createObjectURL(selectedImage)}
                     />
+                    
                     {/* <br />
                     <button onClick={() => setSelectedImage(null)}>
                       Remove
@@ -91,14 +94,7 @@ function App() {
               )}
             </div>
 
-            <input
-              name="fileName"
-              {...register("fileName", { required: true })}
-              type="file"
-              accept="image/png, image/jpeg, image/jpg"
-              id="input-file"
-              className="hide"
-            />
+        
             {errors.fileName && <p>invalid image type</p>}
 
             <label htmlFor="input-two" className="btn">
@@ -107,7 +103,7 @@ function App() {
 
             {selectedImage ?  (
                 <>
-                 <label  className="btn" onClick={handleImageUpload}>
+                 <label  className="btn">
               Upload Photo
             </label>
                 </>  
@@ -122,16 +118,13 @@ function App() {
               name="myImage"
               {...register("myImage", { required: true })}
               onChange={(event) => {
-               
-                console.log(event.target.files[0]);
-                
-                
-               
+            
+                console.log(event.target.files[0]);            
                 const fileLimit = 5 * 1024 * 1024; // 5 MB
                 // setFileForUser(event.target.files[0])
                const clickedFile = event.target.files[0]
                 
-              //  console.log("testfile",setFileForUser(clickedFile))
+           
              
 
                 if (clickedFile.size > fileLimit) {
@@ -165,7 +158,12 @@ function App() {
           </form>
         </section>
       </main>
+
+
     </div>
+
+    <img src={fileforUser} alt="" />
+    </>
   );
 }
 
